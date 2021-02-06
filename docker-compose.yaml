@@ -1,0 +1,45 @@
+version: '3.6'
+
+services:
+  nginx-proxy:
+    image: jwilder/nginx-proxy
+    ports:
+      - "80:80"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro 
+  db:
+    image: mysql:5.7
+    volumes:
+      - db_data:/var/lib/mysql
+      - .backups:/var/backups
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: somewordpress
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: wordpress
+  wordpress:
+    depends_on:
+      - db
+    image: wordpress:latest
+    restart: always
+    volumes:
+    - ./uploads.ini:/usr/local/etc/php/conf.d/uploads.ini
+    - ./php.ini:/usr/local/etc/php/conf.d/php.ini
+    - .wordpress/plugins:/var/www/html/wp-content/plugins
+    - .wordpress/themes:/var/www/html/wp-content/themes
+    - .wordpress/uploads:/var/www/html/wp-content/uploads
+    environment:
+      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress
+      WORDPRESS_DB_NAME: wordpress
+      VIRTUAL_HOST: grace-way.org
+      WORDPRESS_CONFIG_EXTRA: |
+        define( 'WP_MEMORY_LIMIT', '256M' );
+        set_time_limit(1500);
+      # VIRTUAL_PROTO: https
+      # VIRTUAL_PORT: 443
+      # NETWORK_ACCESS: internal
+volumes:
+    db_data: {}
