@@ -34,7 +34,7 @@ services:
       WORDPRESS_DB_USER: wordpress
       WORDPRESS_DB_PASSWORD: wordpress
       WORDPRESS_DB_NAME: wordpress
-      VIRTUAL_HOST: grace-way.org
+      VIRTUAL_HOST: example.de
       WORDPRESS_CONFIG_EXTRA: |
         define( 'WP_MEMORY_LIMIT', '256M' );
         set_time_limit(1500);
